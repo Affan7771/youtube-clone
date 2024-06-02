@@ -9,13 +9,14 @@ import thumbnail6 from '../../assets/thumbnail6.png'
 import thumbnail7 from '../../assets/thumbnail7.png'
 import thumbnail8 from '../../assets/thumbnail8.png'
 import { Link } from 'react-router-dom'
-import { API_KEY, value_converter } from '../../data'
+import { value_converter } from '../../data'
 
 const Feed = ({ category }) => {
 
     const [data, setData] = useState([]);
     const fetchData = async () => {
-        const videoList_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=50&regionCode=US&videoCategoryId=${category}&key=${API_KEY}`;
+        const api_key = import.meta.env.VITE_YOUTUBE_API
+        const videoList_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=50&regionCode=US&videoCategoryId=${category}&key=${api_key}`;
         await fetch(videoList_url)
             .then(response => response.json())
             .then(data => setData(data.items))
@@ -28,7 +29,7 @@ const Feed = ({ category }) => {
         <div className="feed">
             {data.map((item, index) => {
                 return (
-                    <Link to={`video/${item.snippet.categoryId}/${item.id}`} className='card'>
+                    <Link to={`video/${item.snippet.categoryId}/${item.id}`} key={index} className='card'>
                         <img src={item.snippet.thumbnails.medium.url} alt="img-thumbnail" />
                         <h2>{item.snippet.title}</h2>
                         <h3>{item.snippet.channelTitle}</h3>
